@@ -6,14 +6,12 @@ export async function POST(request) {
     const {
       subject,
       body,
-      title,
-      greeting,
-      bestRegards,
       recipient_email,
       emailService,
       sender_email,
       password,
       name,
+      cc
     } = await request.json();
 
     var transporter = nodemailer.createTransport({
@@ -28,14 +26,12 @@ export async function POST(request) {
       from: `"${name}" ${sender_email}`,
       to: recipient_email,
       subject,
+      cc: cc.join(','),
       html: `
         <!DOCTYPE html>
         <html lang="en">
         <body>
-        <p>${greeting}</p>
-        <p>${title}</p>
         <div>${body}</div>
-        <p>${bestRegards}</p>
         </body>
         
         </html>

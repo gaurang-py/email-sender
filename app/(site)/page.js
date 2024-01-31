@@ -1,12 +1,16 @@
-import DeveloperComponent from "@/components/elements/developer";
-import Example from "@/components/homePage/example";
+import TabOne from "@/components/bulkEmailsPage/tabOne";
+import Template from "@/components/template";
+import React from "react";
 
-export default function Home() {
+export default function BulkEmailPage() {
   return (
-    <main className="text-md">
-      <Example />
+    <div>
+      {/* <Template /> */}
+      <br />
+      <div className="border border-1 shadow-lg p-5 rounded-lg">
 
-      <DeveloperComponent />
-    </main>
+      <TabOne />
+      </div>
+    </div>
   );
 }

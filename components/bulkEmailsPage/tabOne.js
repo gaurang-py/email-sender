@@ -29,6 +29,7 @@ export default function TabOne() {
   const [body, setBody] = useState("");
   const [bestRegards, setBestRegards] = useState("");
   const [contactsList, setContactsList] = useState([]);
+  const [ccEmails, setCCEmails] = useState([]);
 
   // Error states
   const [error, setError] = useState(false);
@@ -97,6 +98,7 @@ export default function TabOne() {
             sender_email: emailAddress,
             password: passwordService,
             name: senderName,
+            cc: ccEmails,
           }),
         });
 
@@ -131,8 +133,7 @@ export default function TabOne() {
           <option defaultValue value="gmail">
             Gmail
           </option>
-          <option value="mail.ru">Mail.ru</option>
-          <option value="yahoo">Yahoo</option>
+          
         </select>
         <span className="ml-3">
           <AttachEmailIcon className="text-green-600 mr-3" />
@@ -165,24 +166,24 @@ export default function TabOne() {
 
       {/* Sender Name */}
       <div>
-        <Badge
-          badgeContent="optional"
-          color="info"
-          className="w-full"
-          anchorOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-        >
+        
+        
           <input
             type="text"
             className="login_subject"
             placeholder="Sender Name"
             onChange={(e) => setSenderName(e.target.value)}
           ></input>
-        </Badge>
+        
       </div>
-
+      <div>
+  <input
+    type="text"
+    placeholder="CC Email Addresses (comma-separated)"
+    className="login_input"
+    onChange={(event) => setCCEmails(event.target.value.split(','))}
+  />
+</div>
       {/* Subject */}
       <div>
         <input
@@ -202,22 +203,7 @@ export default function TabOne() {
         </span>
       </div>
 
-      {/* Greeting */}
-      <input
-        type="text"
-        className="login_subject"
-        placeholder="Greeting"
-        onChange={(e) => setGreeting(e.target.value)}
-      ></input>
-
-      {/* Title */}
-      <input
-        type="text"
-        className="login_subject"
-        placeholder="Title"
-        onChange={(e) => setTitle(e.target.value)}
-      ></input>
-
+      
       {/* Message */}
       <textarea
         id="Body"
@@ -227,13 +213,7 @@ export default function TabOne() {
         placeholder="Message Body"
       ></textarea>
 
-      {/* Closing */}
-      <input
-        type="text"
-        className="login_subject"
-        placeholder="Closing e.g Best Regards"
-        onChange={(e) => setBestRegards(e.target.value)}
-      ></input>
+      
 
       <UploadOne setContactsList={setContactsList} />
       {contactsList.length > 0 && (
