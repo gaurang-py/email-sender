@@ -2,6 +2,8 @@
 import AttachEmailIcon from "@mui/icons-material/AttachEmail";
 import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
 import KeyIcon from "@mui/icons-material/Key";
+// import marked from 'marked';
+import DOMPurify from 'dompurify';
 
 import VerifiedIcon from "@mui/icons-material/Verified";
 
@@ -51,37 +53,55 @@ export default function TabOne() {
     setChecked(event.target.checked);
   };
 
+  const handlePaste = (event) => {
+    // Prevent the default paste behavior to handle it manually
+    event.preventDefault();
+
+    // Get the pasted content from the clipboard
+    const pastedContent = event.clipboardData.getData('text/html');
+
+    // Sanitize the pasted content if needed
+    const sanitizedContent = DOMPurify.sanitize(pastedContent);
+
+    // Set the sanitized HTML content
+    setBody(sanitizedContent);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     setError(false);
     setSuccess(false);
+    // const rawContent = body;
+    // const htmlContent = marked(rawContent);
 
+    // Remove the following line:
+    // setBody(event.target.value.replace(/\n/g, "<br>"));
+  
     if (!emailAddress || !passwordService || !body) {
       setError(
         "Please fill your email address, app password, and body of the message and try again"
       );
       return;
     }
-
-    if (contactsList.length == 0) {
+  
+    if (contactsList.length === 0) {
       setError("No email contacts were uploaded, please upload some");
       return;
     }
-
+  
     function sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     }
-
+  
     setLoading(true);
-
+  
     async function delayedLoop() {
       var delay = 2000; //  2 seconds
-
+  
       let successfulEmail = [];
       let unsuccessfulEmail = [];
       for (var i = 0; i < contactsList.length; i++) {
         setCounter(i + 1);
-
+  
         const response = await fetch("/api/bulkemail/templateOne", {
           method: "POST",
           headers: {
@@ -101,16 +121,16 @@ export default function TabOne() {
             cc: ccEmails,
           }),
         });
-
+  
         if (!response.ok) {
           unsuccessfulEmail.push(contactsList[i]);
         } else {
           successfulEmail.push(contactsList[i]);
         }
-
+  
         await sleep(delay);
       }
-
+  
       setLoading(false);
       setQueriedEmail({
         successfulEmails: successfulEmail,
@@ -118,9 +138,10 @@ export default function TabOne() {
       });
       setSuccess(true);
     }
-
+  
     delayedLoop();
   };
+  
 
   return (
     <span className="space-y-5">
@@ -205,13 +226,21 @@ export default function TabOne() {
 
       
       {/* Message */}
-      <textarea
-        id="Body"
-        rows="6"
-        onChange={(e) => setBody(e.target.value)}
+      <div
+        onPaste={handlePaste}
         className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-        placeholder="Message Body"
-      ></textarea>
+        contentEditable
+      ></div>
+      <div dangerouslySetInnerHTML={{ __html: body }} />
+
+      {/* <textarea
+  id="Body"
+  rows="6"
+  onChange={(e) => setBody(e.target.value)}
+  className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+  placeholder="Message Body"
+  value={body.replace(/<br>/g, '\n')}  // Replace <br> with newline characters for rendering
+></textarea> */}
 
       
 
