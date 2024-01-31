@@ -1,5 +1,4 @@
 import TabOne from "@/components/bulkEmailsPage/tabOne";
-import Template from "@/components/template";
 import React from "react";
 
 export default function BulkEmailPage() {
